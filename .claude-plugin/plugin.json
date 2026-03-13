@@ -1,0 +1,17 @@
+{
+  "name": "godot-craft",
+  "description": "텍스트 한 줄로 플레이 가능한 Godot 4 게임을 자율 생성. 6-Phase 파이프라인: Concept → Scaffold → Implement → Visual QA → Polish → Verify",
+  "author": {
+    "name": "user01"
+  },
+  "commands": ["./commands"],
+  "skills": [
+    "./skills/concept-planning",
+    "./skills/scaffold-assets",
+    "./skills/implementation",
+    "./skills/godot-task",
+    "./skills/visual-qa-fix",
+    "./skills/polish-present",
+    "./skills/verification"
+  ]
+}

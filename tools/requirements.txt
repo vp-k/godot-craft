@@ -1,0 +1,13 @@
+# Make with Godot — Python dependencies
+
+# Core (always needed)
+Pillow>=10.0
+numpy>=1.24
+
+# Background removal (optional — for sprite matting)
+rembg>=2.0
+
+# Note: Provider-specific dependencies
+# - Gemini: google-generativeai (or use urllib directly as we do)
+# - No additional packages needed for API-based providers
+#   since we use urllib.request directly

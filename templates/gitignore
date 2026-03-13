@@ -1,0 +1,37 @@
+# Godot 4+ specific ignores
+.godot/
+*.uid
+
+# Godot-specific ignores
+.import/
+export.cfg
+export_presets.cfg
+
+# Imported translations (i18n)
+*.translation
+
+# Mono-specific ignores
+.mono/
+data_*/
+mono_crash.*.json
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDE
+.vscode/
+.idea/
+
+# Build
+build/
+*.pck
+*.zip
+
+# Make-with-godot
+.claude-godot-progress.json
+.claude/ralph-loop.local.md
+.claude/ralph-loop-failure-history.local
+budget.json

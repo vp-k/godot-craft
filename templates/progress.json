@@ -1,0 +1,48 @@
+{
+  "$schema": "godot-craft progress schema",
+  "gameName": "",
+  "requirement": "",
+  "dimension": "",
+  "createdAt": "",
+  "currentPhase": "phase_0",
+  "phases": {
+    "phase_0": { "name": "Concept & Planning", "status": "pending" },
+    "phase_1": { "name": "Scaffold & Assets", "status": "pending" },
+    "phase_2": { "name": "Implementation", "status": "pending" },
+    "phase_3": { "name": "Visual QA & Fix", "status": "pending" },
+    "phase_4": { "name": "Polish & Presentation", "status": "pending" },
+    "phase_5": { "name": "Verification", "status": "pending" }
+  },
+  "tasks": [],
+  "assets": {
+    "budget": { "images": 0, "models": 0, "sounds": 0, "music": 0, "totalCost": 0.0 },
+    "generated": []
+  },
+  "vqa": {
+    "rounds": [],
+    "currentRound": 0,
+    "maxRounds": 3
+  },
+  "errors": [],
+  "escalation": {
+    "currentLevel": 0,
+    "levelBudgets": [3, 3, 1, 3, 1, 1],
+    "levelAttempts": [0, 0, 0, 0, 0, 0]
+  },
+  "scopeReductions": [],
+  "handoff": {
+    "lastIteration": 0,
+    "completedInThisIteration": "",
+    "nextSteps": "",
+    "keyDecisions": [],
+    "warnings": ""
+  },
+  "dod": {
+    "compileCheck": { "checked": false, "evidence": "" },
+    "assetIntegrity": { "checked": false, "evidence": "" },
+    "sceneIntegrity": { "checked": false, "evidence": "" },
+    "allTasksDone": { "checked": false, "evidence": "" },
+    "vqaPassed": { "checked": false, "evidence": "" },
+    "videoGenerated": { "checked": false, "evidence": "" }
+  }
+}

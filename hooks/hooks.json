@@ -1,0 +1,15 @@
+{
+  "description": "Make with Godot - Ralph Loop 완주 보장 stop hook",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
