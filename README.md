@@ -56,12 +56,30 @@ Built-in providers for AI-generated game assets:
 - [Claude Code](https://claude.ai/code) with plugin support
 - [Godot 4](https://godotengine.org/) installed and available in PATH
 - Python 3.10+ with dependencies:
+- `jq` for JSON processing in shell scripts
 
 ```bash
 pip install -r tools/requirements.txt
 ```
 
-Optional API keys for asset generation (set as environment variables):
+### Platform Support
+
+| Feature | Linux | macOS | Windows (WSL) |
+|---------|-------|-------|---------------|
+| Game generation (Phase 0-2, 5) | Full | Full | Full |
+| Screenshot capture (Phase 3) | Full | Not yet | Via WSL |
+| Video recording (Phase 4) | Full | Not yet | Via WSL |
+
+Phase 3 (Visual QA) and Phase 4 (video capture) use `Xvfb` + `ImageMagick`/`scrot` which are Linux-specific. On macOS and Windows, the game is still fully generated and verified — only automated screenshot/video capture is unavailable.
+
+For full Phase 3/4 support on Linux:
+```bash
+sudo apt-get install xvfb imagemagick ffmpeg
+```
+
+### Optional: API Keys for Asset Generation
+
+Set as environment variables:
 - `GEMINI_API_KEY` — Google Gemini for image generation
 - `FAL_KEY` — Flux image generation
 - `MESHY_API_KEY` — 3D model generation
