@@ -88,6 +88,27 @@ Set as environment variables:
 - `TRIPO_API_KEY` — 3D model generation
 - `SUNO_API_KEY` — Music generation
 
+**Windows (CMD):**
+```cmd
+set GEMINI_API_KEY=your-key
+set WORKER_IMAGE_URL=https://your-worker.workers.dev/generate
+set WORKER_IMAGE_API_KEY=your-key
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:GEMINI_API_KEY="your-key"
+$env:WORKER_IMAGE_URL="https://your-worker.workers.dev/generate"
+$env:WORKER_IMAGE_API_KEY="your-key"
+```
+
+**macOS / Linux:**
+```bash
+export GEMINI_API_KEY=your-key
+export WORKER_IMAGE_URL=https://your-worker.workers.dev/generate
+export WORKER_IMAGE_API_KEY=your-key
+```
+
 ## Installation
 
 Add godot-craft as a Claude Code plugin:
