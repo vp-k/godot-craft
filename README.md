@@ -88,11 +88,18 @@ Set as environment variables:
 - `TRIPO_API_KEY` — 3D model generation
 - `SUNO_API_KEY` — Music generation
 
-**Windows (CMD):**
+**Windows (CMD — 현재 세션만):**
 ```cmd
 set GEMINI_API_KEY=your-key
 set WORKER_IMAGE_URL=https://your-worker.workers.dev/generate
 set WORKER_IMAGE_API_KEY=your-key
+```
+
+**Windows (CMD — 영구 설정):**
+```cmd
+setx GEMINI_API_KEY your-key
+setx WORKER_IMAGE_URL https://your-worker.workers.dev/generate
+setx WORKER_IMAGE_API_KEY your-key
 ```
 
 **Windows (PowerShell):**
