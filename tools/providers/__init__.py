@@ -72,13 +72,16 @@ class MusicProvider(ABC):
 
 def get_image_provider() -> ImageProvider:
     """환경변수 IMAGE_PROVIDER에 따라 provider 반환"""
-    provider = os.environ.get("IMAGE_PROVIDER", "gemini").lower()
+    provider = os.environ.get("IMAGE_PROVIDER", "worker").lower()
     if provider == "gemini":
         from .image_gemini import GeminiImageProvider
         return GeminiImageProvider()
     elif provider == "flux":
         from .image_flux import FluxImageProvider
         return FluxImageProvider()
+    elif provider == "worker":
+        from .image_worker import WorkerImageProvider
+        return WorkerImageProvider()
     else:
         raise ValueError(f"Unknown image provider: {provider}")
 

@@ -45,7 +45,7 @@ Phase 5: Verification ─── Final integrity checks + DoD completion
 
 Built-in providers for AI-generated game assets:
 
-- **Images** — Flux, Gemini (sprites, backgrounds, UI)
+- **Images** — Flux, Gemini, Worker (sprites, backgrounds, UI)
 - **3D Models** — Meshy, Tripo
 - **Music** — Suno
 - **Sound Effects** — SFX Engine
@@ -82,6 +82,7 @@ sudo apt-get install xvfb imagemagick ffmpeg
 Set as environment variables:
 - `GEMINI_API_KEY` — Google Gemini for image generation
 - `FAL_KEY` — Flux image generation
+- `WORKER_IMAGE_API_KEY` — Worker image proxy
 - `MESHY_API_KEY` — 3D model generation
 - `TRIPO_API_KEY` — 3D model generation
 - `SUNO_API_KEY` — Music generation

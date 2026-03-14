@@ -14,7 +14,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/tools/asset_gen.py \
   --output "game/assets/sprites/player.png"
 ```
 
-환경변수: `IMAGE_PROVIDER=gemini|flux|openai` (기본: gemini)
+환경변수: `IMAGE_PROVIDER=gemini|flux|worker` (기본: gemini)
 
 ### 3D 모델 생성 (이미지→GLB)
 
@@ -117,7 +117,7 @@ budget도 자동 업데이트됩니다.
 |----------|---------|
 | Gemini | `GEMINI_API_KEY` |
 | Flux | `FAL_API_KEY` |
-| OpenAI | `OPENAI_API_KEY` |
+| Worker | `WORKER_IMAGE_API_KEY` |
 | Tripo | `TRIPO_API_KEY` |
 | Meshy | `MESHY_API_KEY` |
 | SFX Engine | (불필요 — 무료) |
