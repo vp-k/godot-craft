@@ -13,7 +13,9 @@ class WorkerImageProvider(ImageProvider):
         self.api_key = os.environ.get("WORKER_IMAGE_API_KEY")
         if not self.api_key:
             raise ValueError("WORKER_IMAGE_API_KEY environment variable required")
-        self.url = "https://worker-image-proxy.acappella-vp.workers.dev/generate"
+        self.url = os.environ.get("WORKER_IMAGE_URL")
+        if not self.url:
+            raise ValueError("WORKER_IMAGE_URL environment variable required")
 
     def generate(self, prompt: str, size: str = "1024x1024",
                  aspect: str = "1:1") -> bytes:
