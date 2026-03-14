@@ -82,7 +82,8 @@ sudo apt-get install xvfb imagemagick ffmpeg
 Set as environment variables:
 - `GEMINI_API_KEY` — Google Gemini for image generation
 - `FAL_KEY` — Flux image generation
-- `WORKER_IMAGE_API_KEY` — Worker image proxy
+- `WORKER_IMAGE_URL` — Worker image proxy endpoint URL
+- `WORKER_IMAGE_API_KEY` — Worker image proxy API key
 - `MESHY_API_KEY` — 3D model generation
 - `TRIPO_API_KEY` — 3D model generation
 - `SUNO_API_KEY` — Music generation
