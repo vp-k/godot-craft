@@ -109,11 +109,24 @@ $env:WORKER_IMAGE_URL="https://your-worker.workers.dev/generate"
 $env:WORKER_IMAGE_API_KEY="your-key"
 ```
 
-**macOS / Linux:**
+**macOS / Linux (현재 세션만):**
 ```bash
 export GEMINI_API_KEY=your-key
 export WORKER_IMAGE_URL=https://your-worker.workers.dev/generate
 export WORKER_IMAGE_API_KEY=your-key
+```
+
+**macOS / Linux (영구 설정):**
+```bash
+# zsh (macOS 기본)
+echo 'export GEMINI_API_KEY=your-key' >> ~/.zshrc
+echo 'export WORKER_IMAGE_URL=https://your-worker.workers.dev/generate' >> ~/.zshrc
+echo 'export WORKER_IMAGE_API_KEY=your-key' >> ~/.zshrc
+
+# bash
+echo 'export GEMINI_API_KEY=your-key' >> ~/.bashrc
+echo 'export WORKER_IMAGE_URL=https://your-worker.workers.dev/generate' >> ~/.bashrc
+echo 'export WORKER_IMAGE_API_KEY=your-key' >> ~/.bashrc
 ```
 
 ## Installation
