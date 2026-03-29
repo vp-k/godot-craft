@@ -1,0 +1,119 @@
+{
+  "_comment": "Godot 게임 테스트 시나리오 템플릿. game-develop의 action-payloads-template.json 대응.",
+  "_usage": "godot-test-runner.sh가 이 파일을 읽어 시나리오별로 Godot을 실행합니다.",
+  "_actions": "press/release는 Godot Input Action 이름을 사용합니다 (Input Map에 정의된 액션).",
+
+  "scenarios": {
+    "idle": {
+      "description": "아무 입력 없이 60프레임 대기 — 크래시, 에러, 아이들 안정성 확인",
+      "frames": 60,
+      "steps": []
+    },
+    "start-game": {
+      "description": "ui_accept로 게임 시작, 120프레임 관찰",
+      "frames": 120,
+      "steps": [
+        { "frame": 0, "press": ["ui_accept"] },
+        { "frame": 3, "release": ["ui_accept"] }
+      ],
+      "assertions": {
+        "mode": { "ne": "menu" }
+      }
+    },
+    "basic-movement": {
+      "description": "게임 시작 후 4방향 이동 테스트",
+      "frames": 180,
+      "steps": [
+        { "frame": 0, "press": ["ui_accept"] },
+        { "frame": 3, "release": ["ui_accept"] },
+        { "frame": 20, "press": ["move_right"] },
+        { "frame": 40, "release": ["move_right"] },
+        { "frame": 45, "press": ["move_left"] },
+        { "frame": 65, "release": ["move_left"] },
+        { "frame": 70, "press": ["move_up"] },
+        { "frame": 90, "release": ["move_up"] },
+        { "frame": 95, "press": ["move_down"] },
+        { "frame": 115, "release": ["move_down"] }
+      ],
+      "assertions": {
+        "player.x": { "ne": 0 }
+      }
+    },
+    "jump-test": {
+      "description": "게임 시작 후 점프 테스트 (플랫포머용)",
+      "frames": 150,
+      "steps": [
+        { "frame": 0, "press": ["ui_accept"] },
+        { "frame": 3, "release": ["ui_accept"] },
+        { "frame": 30, "press": ["jump"] },
+        { "frame": 33, "release": ["jump"] }
+      ]
+    },
+    "move-and-jump": {
+      "description": "이동 중 점프 (복합 입력)",
+      "frames": 150,
+      "steps": [
+        { "frame": 0, "press": ["ui_accept"] },
+        { "frame": 3, "release": ["ui_accept"] },
+        { "frame": 20, "press": ["move_right"] },
+        { "frame": 30, "press": ["jump"] },
+        { "frame": 33, "release": ["jump"] },
+        { "frame": 50, "release": ["move_right"] }
+      ]
+    },
+    "mouse-click-center": {
+      "description": "화면 중앙 클릭",
+      "frames": 60,
+      "steps": [
+        { "frame": 10, "mouse_click": { "x": 640, "y": 360, "button": 1 } }
+      ]
+    },
+    "pause-resume": {
+      "description": "게임 시작 → 플레이 → 일시정지 → 재개",
+      "frames": 180,
+      "steps": [
+        { "frame": 0, "press": ["ui_accept"] },
+        { "frame": 3, "release": ["ui_accept"] },
+        { "frame": 30, "press": ["move_right"] },
+        { "frame": 50, "release": ["move_right"] },
+        { "frame": 60, "press": ["pause"] },
+        { "frame": 63, "release": ["pause"] },
+        { "frame": 100, "press": ["pause"] },
+        { "frame": 103, "release": ["pause"] },
+        { "frame": 110, "press": ["move_right"] },
+        { "frame": 130, "release": ["move_right"] }
+      ]
+    },
+    "boundary-test": {
+      "description": "게임 시작 후 모든 방향 경계까지 이동",
+      "frames": 360,
+      "steps": [
+        { "frame": 0, "press": ["ui_accept"] },
+        { "frame": 3, "release": ["ui_accept"] },
+        { "frame": 10, "press": ["move_left"] },
+        { "frame": 70, "release": ["move_left"] },
+        { "frame": 80, "press": ["move_right"] },
+        { "frame": 200, "release": ["move_right"] },
+        { "frame": 210, "press": ["move_up"] },
+        { "frame": 270, "release": ["move_up"] },
+        { "frame": 280, "press": ["move_down"] },
+        { "frame": 340, "release": ["move_down"] }
+      ]
+    },
+    "stress-test": {
+      "description": "빠른 교대 입력 — 입력 처리 안정성 확인",
+      "frames": 120,
+      "steps": [
+        { "frame": 0, "press": ["ui_accept"] },
+        { "frame": 3, "release": ["ui_accept"] },
+        { "frame": 10, "press": ["move_left", "jump"] },
+        { "frame": 12, "release": ["move_left", "jump"], "press": ["move_right"] },
+        { "frame": 14, "release": ["move_right"], "press": ["jump"] },
+        { "frame": 16, "release": ["jump"], "press": ["move_up", "jump"] },
+        { "frame": 18, "release": ["move_up", "jump"], "press": ["move_down"] },
+        { "frame": 20, "release": ["move_down"], "press": ["move_left", "move_right"] },
+        { "frame": 22, "release": ["move_left", "move_right"] }
+      ]
+    }
+  }
+}

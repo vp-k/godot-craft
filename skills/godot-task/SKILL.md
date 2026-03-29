@@ -109,6 +109,32 @@ bash ${CLAUDE_PLUGIN_ROOT}/scripts/godot-gate.sh compile-check
 2. `quirks.md` 참조 (알려진 함정인지)
 3. 수정 후 재검증
 
+### Step 7: 인터랙티브 테스트 (선택적)
+
+compile-check 통과 후, 관련 시나리오가 있으면 인터랙티브 테스트를 실행합니다.
+
+```bash
+# 이동 구현 → basic-movement 시나리오
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/godot-test-runner.sh \
+  --inject-autoloads \
+  --scenario basic-movement \
+  --output-dir test_output
+```
+
+시나리오 선택 기준:
+- 이동/입력 구현 → `basic-movement`
+- 점프 구현 → `jump-test`
+- 게임 시작/메뉴 → `start-game`
+- 일시정지 → `pause-resume`
+- 신규 기능 → 해당 시나리오가 없으면 스킵 (Phase 3 전 배치 테스트에서 수행)
+
+결과 확인:
+1. **스크린샷**: `Read test_output/shot-{scenario}.png`로 시각 확인
+2. **상태**: `Read test_output/state-{scenario}.json`으로 상태 확인
+3. **에러**: `Read test_output/errors-{scenario}.json` (있으면 첫 에러만 수정)
+
+상세 규칙은 `rules/testing-rules-godot.md` 참조.
+
 ## 보조 레퍼런스
 
 필요시 다음을 Read로 로드:
@@ -119,9 +145,20 @@ bash ${CLAUDE_PLUGIN_ROOT}/scripts/godot-gate.sh compile-check
 - `${CLAUDE_PLUGIN_ROOT}/skills/godot-task/coordination.md` — 씬 간 조정
 - `${CLAUDE_PLUGIN_ROOT}/skills/godot-task/capture.md` — 스크린샷 캡처
 - `${CLAUDE_PLUGIN_ROOT}/skills/godot-task/visual-qa.md` — VQA 도구
+- `${CLAUDE_PLUGIN_ROOT}/skills/godot-testing/SKILL.md` — 인터랙티브 테스트
+- `${CLAUDE_PLUGIN_ROOT}/rules/testing-rules-godot.md` — 테스팅 규칙
+
+## 게임 코드 규칙 (테스트 호환)
+
+코드 작성 시 다음을 반드시 적용하여 테스트 자동화와 호환되게 합니다:
+
+1. **그룹 태그**: 플레이어 → `add_to_group("player")`, 적 → `add_to_group("enemies")`, GameManager → `add_to_group("game_manager")`
+2. **GameManager 프로퍼티**: `game_mode: String`, `score: int` (StateReporter가 읽음)
+3. **Input Action 이름**: `move_left`, `move_right`, `move_up`, `move_down`, `jump`, `attack`, `pause` 등 표준 이름
 
 ## 완료 조건
 
 - [x] 태스크의 outputs 파일 모두 생성/수정
 - [x] compile-check 통과
 - [x] 시그널 맵대로 연결 완료
+- [x] 관련 테스트 시나리오 통과 (해당되는 경우)

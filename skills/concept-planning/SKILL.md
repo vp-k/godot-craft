@@ -21,6 +21,28 @@ description: "Phase 0 — 게임 콘셉트 확장, 비주얼 타겟 생성, PLAN
 4. **게임 루프** 설계 (시작→플레이→승리/패배→재시작)
 5. **콘셉트 문서** 작성 (2~3문단)
 
+### Step 1.5: DESIGN.md 작성
+
+`templates/game-design-template.md`를 기반으로 게임 디자인 문서를 작성합니다:
+
+```
+Read ${CLAUDE_PLUGIN_ROOT}/templates/game-design-template.md
+```
+
+8개 섹션을 채웁니다:
+1. **Overview** — 제목, 장르, 타겟, 엘리베이터 피치
+2. **Core Mechanics** — 주요/보조 메커닉, 승리/패배 조건
+3. **Controls** — Godot Input Map 기준 키 매핑
+4. **Game States** — 씬 전이 다이어그램 (MENU→PLAYING↔PAUSED→GAMEOVER)
+5. **Visual Style** — 색상 팔레트, 아트 스타일, reference.png 프롬프트
+6. **Difficulty Progression** — 난이도 곡선
+7. **Scoring System** — 점수 체계
+8. **Technical Notes** — Godot 4 물리 설정, 충돌 레이어 개요
+
+DESIGN.md는 리뷰(Phase 4.5)에서 "원래 의도 vs 구현 결과" 비교 기준으로 활용됩니다.
+
+**Quick 모드**: DESIGN.md를 간소화 — Overview + Core Mechanics + Controls만 작성.
+
 ### Step 2: 비주얼 타겟 프롬프트
 
 게임의 시각적 목표를 정의하는 이미지 생성 프롬프트를 작성합니다:
@@ -217,6 +239,7 @@ PLAN.md의 태스크를 다음 형식으로 progress JSON에 로드:
 
 ## 완료 조건
 
+- [x] DESIGN.md 작성 완료
 - [x] PLAN.md 작성 완료
 - [x] STRUCTURE.md 작성 완료
 - [x] ASSETS.md 작성 완료
