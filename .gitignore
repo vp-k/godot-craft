@@ -1,0 +1,6 @@
+# auto-complete-loop runtime artifacts
+.claude-full-auto-progress.json
+.claude-review-loop-progress.json
+.claude-verification.json
+.claude/scheduled_tasks.lock
+.claude/last_run.json
