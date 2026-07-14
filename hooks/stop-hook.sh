@@ -4,9 +4,15 @@
 
 set -euo pipefail
 
-# jq 의존성
+# Claude Code는 훅 입력(JSON)을 stdin으로 전달한다. stdin을 우선 읽고,
+# 비어 있으면 CLAUDE_HOOK_INPUT 환경변수로 폴백 (목업/테스트 호환).
+HOOK_INPUT=$(cat 2>/dev/null || true)
+if [[ -z "$HOOK_INPUT" ]]; then
+  HOOK_INPUT="${CLAUDE_HOOK_INPUT:-}"
+fi
+
+# jq 의존성 — 없으면 허용 (Stop 훅은 무출력 exit 0 = 허용)
 if ! command -v jq &>/dev/null; then
-  echo '{"decision": "allow"}'
   exit 0
 fi
 
@@ -38,10 +44,10 @@ if [[ $MAX_ITERATIONS -gt 0 ]] && [[ $ITERATION -ge $MAX_ITERATIONS ]]; then
   exit 0
 fi
 
-# 트랜스크립트에서 마지막 assistant 메시지 추출
+# 트랜스크립트에서 마지막 assistant 메시지 추출 (훅 입력은 상단에서 stdin 우선으로 읽음)
 TRANSCRIPT_PATH=""
-if [[ -n "${CLAUDE_HOOK_INPUT:-}" ]]; then
-  TRANSCRIPT_PATH=$(echo "$CLAUDE_HOOK_INPUT" | jq -r '.transcript_path // empty' 2>/dev/null || true)
+if [[ -n "$HOOK_INPUT" ]]; then
+  TRANSCRIPT_PATH=$(printf '%s' "$HOOK_INPUT" | jq -r '.transcript_path // empty' 2>/dev/null || true)
 fi
 
 LAST_OUTPUT=""
