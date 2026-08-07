@@ -10,6 +10,7 @@ import glob
 import json
 import os
 import sys
+import urllib.error
 import urllib.request
 
 
@@ -87,8 +88,22 @@ def run_vqa(screenshots: list, reference: str = None,
         method="POST"
     )
 
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        result = json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+    except (urllib.error.HTTPError, urllib.error.URLError) as e:
+        detail = (
+            f"{e.code}: {e.read().decode('utf-8', errors='replace')[:200]}"
+            if isinstance(e, urllib.error.HTTPError)
+            else str(getattr(e, "reason", e))
+        )
+        return {
+            "verdict": "fail",
+            "score": 0.0,
+            "issues": [{"severity": "high",
+                        "description": f"Gemini VQA request failed: {detail}",
+                        "suggestion": "Retry VQA (transient) or check GEMINI_API_KEY / quota"}]
+        }
 
     # 응답 텍스트 추출
     text = ""

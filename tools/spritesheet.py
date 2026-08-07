@@ -92,8 +92,14 @@ def main():
     args = parser.parse_args()
 
     if args.command == "pack":
+        if args.cols <= 0:
+            print("ERROR: --cols must be a positive integer", file=sys.stderr)
+            sys.exit(1)
         pack_frames(args.frames, args.cols, args.output)
     elif args.command == "slice":
+        if args.cols <= 0 or args.rows <= 0:
+            print("ERROR: --cols and --rows must be positive integers", file=sys.stderr)
+            sys.exit(1)
         slice_sheet(args.input, args.cols, args.rows, args.output_dir)
 
 

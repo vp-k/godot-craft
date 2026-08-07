@@ -1,6 +1,6 @@
 {
   "name": "godot-craft",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "텍스트 한 줄로 플레이 가능한 Godot 4 게임을 자율 생성. 6-Phase 파이프라인: Concept → Scaffold → Implement → Test → Review → Verify",
   "author": {
     "name": "user01"

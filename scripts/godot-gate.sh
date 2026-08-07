@@ -279,9 +279,9 @@ cmd_build_order() {
   echo "=== Scene Build Order (topological) ==="
 
   # 의존성이 없는 씬을 먼저, 의존성이 있는 씬을 나중에
-  grep -oP '\w+\.tscn' "$structure_md" 2>/dev/null | sort -u | while read -r scene; do
+  grep -oE '[[:alnum:]_]+\.tscn' "$structure_md" 2>/dev/null | sort -u | while read -r scene; do
     local deps
-    deps=$(grep -F "$scene" "$structure_md" | grep -oP 'depends?:\s*\K[^)]+' 2>/dev/null || true)
+    deps=$(grep -F "$scene" "$structure_md" | grep -oE 'depends?:[[:space:]]*[^)]+' 2>/dev/null | sed -E 's/^depends?:[[:space:]]*//' || true)
     if [[ -z "$deps" ]]; then
       echo "L0: $scene (no deps)"
     else
@@ -315,7 +315,8 @@ cmd_compile_check() {
   if [[ -s "$stderr_file" ]]; then
     # GDScript 에러 패턴 추출
     errors=$(grep -iE '(error|SCRIPT ERROR|Parse Error|at line|Cannot)' "$stderr_file" 2>/dev/null || true)
-    error_count=$(echo "$errors" | grep -c '.' 2>/dev/null || echo "0")
+    error_count=$(printf '%s' "$errors" | grep -c . 2>/dev/null || true)
+    error_count=${error_count:-0}
   fi
 
   # JSON 결과 출력
@@ -555,7 +556,8 @@ cmd_final_gate() {
 
   # 디버그 코드 확인
   local debug_count
-  debug_count=$(cmd_find_debug_code 2>/dev/null | grep -c "FOUND" || echo "0")
+  debug_count=$(cmd_find_debug_code 2>/dev/null | grep -c "FOUND" || true)
+  debug_count=${debug_count:-0}
   if [[ $debug_count -gt 0 ]]; then
     echo "WARN: $debug_count debug code instances found (non-blocking)"
   else
@@ -672,7 +674,7 @@ cmd_scene_integrity() {
         echo "FAIL: $tscn_file references missing: res://$res_path"
         errors=$((errors + 1))
       fi
-    done < <(grep -oP 'path="res://\K[^"]+' "$tscn_file" 2>/dev/null || true)
+    done < <(grep -oE 'path="res://[^"]+' "$tscn_file" 2>/dev/null | sed -E 's#^path="res://##' || true)
 
     # load("res://...") 패턴도 확인
     while IFS= read -r res_path; do
@@ -681,7 +683,7 @@ cmd_scene_integrity() {
         echo "FAIL: $tscn_file loads missing: res://$res_path"
         errors=$((errors + 1))
       fi
-    done < <(grep -oP 'load\("res://\K[^"]+' "$tscn_file" 2>/dev/null || true)
+    done < <(grep -oE 'load\("res://[^"]+' "$tscn_file" 2>/dev/null | sed -E 's#^load\("res://##' || true)
   done < <(find "$project_dir" -name "*.tscn" -o -name "*.tres" 2>/dev/null)
 
   # .gd 스크립트의 load/preload 참조도 확인
@@ -692,7 +694,7 @@ cmd_scene_integrity() {
         echo "FAIL: $gd_file loads missing: res://$res_path"
         errors=$((errors + 1))
       fi
-    done < <(grep -oP '(?:pre)?load\("res://\K[^"]+' "$gd_file" 2>/dev/null || true)
+    done < <(grep -oE '(pre)?load\("res://[^"]+' "$gd_file" 2>/dev/null | sed -E 's#^(pre)?load\("res://##' || true)
   done < <(find "$project_dir" -name "*.gd" 2>/dev/null)
 
   if [[ $errors -gt 0 ]]; then
@@ -768,13 +770,13 @@ cmd_collision_setup() {
       continue
     fi
     if $found_section; then
-      if echo "$line" | grep -qP '^#+\s|^$' && [[ -n "$layer_config" ]]; then
+      if echo "$line" | grep -qE '^#+[[:space:]]|^$' && [[ -n "$layer_config" ]]; then
         break
       fi
-      if echo "$line" | grep -qP 'Layer\s*\d+'; then
+      if echo "$line" | grep -qE 'Layer[[:space:]]*[0-9]+'; then
         local num name
-        num=$(echo "$line" | grep -oP '\d+' | head -1)
-        name=$(echo "$line" | grep -oP ':\s*\K\w+' | head -1)
+        num=$(echo "$line" | grep -oE '[0-9]+' | head -1)
+        name=$(echo "$line" | grep -oE ':[[:space:]]*[[:alnum:]_]+' | sed -E 's/^:[[:space:]]*//' | head -1)
         if [[ -n "$num" ]] && [[ -n "$name" ]]; then
           layer_config="${layer_config}2d_physics/layer_${num}=\"${name}\"\n"
           layer_config="${layer_config}3d_physics/layer_${num}=\"${name}\"\n"
@@ -998,7 +1000,8 @@ cmd_record_error() {
 
   # 레벨 번호 추출
   local level_num
-  level_num=$(echo "$level" | grep -oP '\d+' || echo "0")
+  level_num=$(echo "$level" | grep -oE '[0-9]+' | head -1 || true)
+  level_num=${level_num:-0}
 
   # 에러 기록
   jq_inplace "$PROGRESS_FILE" \
@@ -1013,8 +1016,10 @@ cmd_record_error() {
   # 에스컬레이션 체크
   local budget attempts
   budget=$(jq ".escalation.levelBudgets[$level_num]" "$PROGRESS_FILE")
+  [[ "$budget" == "null" || -z "$budget" ]] && budget=3
   jq_inplace "$PROGRESS_FILE" --argjson ln "$level_num" '.escalation.levelAttempts[$ln] += 1'
   attempts=$(jq ".escalation.levelAttempts[$level_num]" "$PROGRESS_FILE")
+  [[ "$attempts" == "null" || -z "$attempts" ]] && attempts=0
 
   if [[ $attempts -ge $budget ]]; then
     # 예산 소진 → 다음 레벨로 에스컬레이트

@@ -120,10 +120,11 @@ if [[ "$COMPLETION_PROMISE" != "null" ]] && [[ -n "$COMPLETION_PROMISE" ]]; then
       fi
       REPEAT_COUNT=0
       if [[ -f "$FAILURE_HISTORY_FILE" ]]; then
-        REPEAT_COUNT=$(grep -c "^${CURRENT_FAILURE_HASH}$" "$FAILURE_HISTORY_FILE" 2>/dev/null || echo "0")
+        REPEAT_COUNT=$(grep -c "^${CURRENT_FAILURE_HASH}$" "$FAILURE_HISTORY_FILE" 2>/dev/null || true)
+        REPEAT_COUNT=${REPEAT_COUNT:-0}
       fi
       echo "$CURRENT_FAILURE_HASH" >> "$FAILURE_HISTORY_FILE"
-      REPEAT_COUNT=$((REPEAT_COUNT + 1))
+      REPEAT_COUNT=$(( ${REPEAT_COUNT:-0} + 1 ))
 
       if [[ $REPEAT_COUNT -ge 3 ]]; then
         echo "Make with Godot: Breaking loop — unresolvable verification failures."

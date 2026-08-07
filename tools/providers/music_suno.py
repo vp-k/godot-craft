@@ -56,8 +56,17 @@ class SunoMusicProvider(MusicProvider):
         for _ in range(120):
             status_url = f"https://apibox.erweima.ai/api/v1/generate/record-info?taskId={task_id}"
             req = urllib.request.Request(status_url, headers=headers)
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                status = json.loads(resp.read().decode("utf-8"))
+            try:
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    status = json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as e:
+                if e.code == 429 or e.code >= 500:
+                    time.sleep(5)
+                    continue
+                raise RuntimeError(f"Suno API error {e.code}: {e.read().decode('utf-8', errors='replace')[:200]}") from e
+            except urllib.error.URLError:
+                time.sleep(5)
+                continue
 
             records = status.get("data", {}).get("response", {}).get("sunoData", [])
             if records and records[0].get("audioUrl"):

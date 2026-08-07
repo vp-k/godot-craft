@@ -66,8 +66,8 @@ done
 # ─── 유틸리티 ───
 
 die() { echo "ERROR: $*" >&2; exit 1; }
-log() { echo "[godot-test] $*"; }
-vlog() { [[ "$VERBOSE" == true ]] && echo "[godot-test][debug] $*" || true; }
+log() { echo "[godot-test] $*" >&2; }
+vlog() { [[ "$VERBOSE" == true ]] && echo "[godot-test][debug] $*" >&2 || true; }
 
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || die "$1 is required but not installed"
@@ -324,7 +324,8 @@ run_scenario() {
   # stderr에서 에러 추출 (SEC-HIGH-001: Godot 에러 접두사만 매칭)
   if [[ -f "$OUTPUT_DIR/stderr-${scenario_name}.log" ]]; then
     local error_count
-    error_count=$(grep -c "ERROR:\|SCRIPT ERROR:\|USER ERROR:\|FATAL:" "$OUTPUT_DIR/stderr-${scenario_name}.log" 2>/dev/null || echo 0)
+    error_count=$(grep -c "ERROR:\|SCRIPT ERROR:\|USER ERROR:\|FATAL:" "$OUTPUT_DIR/stderr-${scenario_name}.log" 2>/dev/null || true)
+    error_count=${error_count:-0}
     if [[ "$error_count" -gt 0 ]]; then
       log "WARNING: $error_count error(s) in $scenario_name"
       # 에러를 JSON으로 저장

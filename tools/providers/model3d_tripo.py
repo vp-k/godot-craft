@@ -61,15 +61,27 @@ class TripoModel3DProvider(Model3DProvider):
                 f"{self.base_url}/task/{task_id}",
                 headers=headers
             )
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                status = json.loads(resp.read().decode("utf-8"))
+            try:
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    status = json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as e:
+                if e.code == 429 or e.code >= 500:
+                    time.sleep(3)
+                    continue
+                raise RuntimeError(f"Tripo API error {e.code}: {e.read().decode('utf-8', errors='replace')[:200]}") from e
+            except urllib.error.URLError:
+                time.sleep(3)
+                continue
 
-            if status["data"]["status"] == "success":
-                model_url = status["data"]["output"]["model"]
+            state = status.get("data", {}).get("status")
+            if state == "success":
+                model_url = status.get("data", {}).get("output", {}).get("model")
+                if not model_url:
+                    raise RuntimeError(f"No model URL in Tripo response: {status}")
                 with urllib.request.urlopen(model_url, timeout=60) as resp:
                     return resp.read()
-            elif status["data"]["status"] == "failed":
-                raise RuntimeError(f"Tripo task failed: {status['data'].get('message', 'unknown')}")
+            elif state == "failed":
+                raise RuntimeError(f"Tripo task failed: {status.get('data', {}).get('message', 'unknown')}")
 
             time.sleep(3)
 

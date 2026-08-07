@@ -59,14 +59,26 @@ class MeshyModel3DProvider(Model3DProvider):
                 f"{self.base_url}/image-to-3d/{task_id}",
                 headers=headers
             )
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                status = json.loads(resp.read().decode("utf-8"))
+            try:
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    status = json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as e:
+                if e.code == 429 or e.code >= 500:
+                    time.sleep(3)
+                    continue
+                raise RuntimeError(f"Meshy API error {e.code}: {e.read().decode('utf-8', errors='replace')[:200]}") from e
+            except urllib.error.URLError:
+                time.sleep(3)
+                continue
 
-            if status["status"] == "SUCCEEDED":
-                model_url = status["model_urls"]["glb"]
+            state = status.get("status")
+            if state == "SUCCEEDED":
+                model_url = status.get("model_urls", {}).get("glb")
+                if not model_url:
+                    raise RuntimeError(f"No GLB URL in Meshy response: {status}")
                 with urllib.request.urlopen(model_url, timeout=60) as resp:
                     return resp.read()
-            elif status["status"] == "FAILED":
+            elif state == "FAILED":
                 raise RuntimeError(f"Meshy task failed: {status.get('task_error', {}).get('message', 'unknown')}")
 
             time.sleep(3)

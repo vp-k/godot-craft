@@ -62,8 +62,17 @@ class FluxImageProvider(ImageProvider):
 
         for _ in range(60):
             req = urllib.request.Request(status_url, headers=headers)
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                status = json.loads(resp.read().decode("utf-8"))
+            try:
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    status = json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as e:
+                if e.code == 429 or e.code >= 500:
+                    time.sleep(2)
+                    continue
+                raise RuntimeError(f"Flux API error {e.code}: {e.read().decode('utf-8', errors='replace')[:200]}") from e
+            except urllib.error.URLError:
+                time.sleep(2)
+                continue
             if status.get("status") == "COMPLETED":
                 req = urllib.request.Request(result_url, headers=headers)
                 with urllib.request.urlopen(req, timeout=30) as resp:
